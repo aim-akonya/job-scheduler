@@ -30,6 +30,10 @@ public class Application {
 			JobDetail job = newJob(HelloJob.class).withIdentity("myJob", "group1")
 					.usingJobData("jobType", "password_expiry_notification")
 					.build();
+			
+			JobDetail job2 = newJob(HelloJob.class).withIdentity("myJob2", "group2")
+					.usingJobData("jobType", "password_expiry_notification")
+					.build();
 
 			// simple trigger
 			Trigger trigger = newTrigger().withIdentity("myTrigger", "group1").startNow()
@@ -38,22 +42,23 @@ public class Application {
 			
 			//cron trigger
 			Trigger trigger2 = newTrigger()
-				    .withIdentity("myTrigger2", "group1")
-				    .withSchedule(cronSchedule("0 0/2 8-17 * * ?"))
-				    .forJob("myJob", "group1")
+				    .withIdentity("myTrigger2", "group2")
+				    .withSchedule(cronSchedule("0 17 9-10 * * ?"))
+				    .forJob("myJob2", "group2")
 				    .build();
 			
 			
 
 			scheduler.scheduleJob(job, trigger);
-			scheduler.scheduleJob(job, trigger2);
+			scheduler.scheduleJob(job2, trigger2);
 
 			Thread.sleep(60000);
 
 			scheduler.shutdown();
 			LOGGER.info("scheduler instance stopped");
 		} catch (Exception e) {
-			LOGGER.error("error stopping schedular instance");
+			e.printStackTrace();
+			
 
 		}
 	}
